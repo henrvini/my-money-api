@@ -5,15 +5,18 @@ BillingCycle.methods(["get", "post", "put", "delete"]);
 BillingCycle.updateOptions({ new: true, runValidators: true });
 BillingCycle.after("post", errorHandler).after("put", errorHandler);
 
-BillingCycle.route("get", (req, res, next) => {
-  BillingCycle.find({}, (err, docs) => {
-    if (err) {
-      res.status(500).json({ errors: [err] });
-    } else {
-      res.json(docs);
-    }
-  });
-});
+// ### - SUGESTÃO DO CURSO PARA SOLUCIONAR UM PROBLEMA - ###
+// com estas linhas no código o skip e limit(paginação) não funciona
+
+// BillingCycle.route("get", (req, res, next) => {
+//   BillingCycle.find({}, (err, docs) => {
+//     if (err) {
+//       res.status(500).json({ errors: [err] });
+//     } else {
+//       res.json(docs);
+//     }
+//   });
+// });
 
 BillingCycle.route("count", (req, res, next) => {
   BillingCycle.countDocuments((err, value) => {
