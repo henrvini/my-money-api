@@ -5,13 +5,14 @@
   "main": "src/loader.js",
   "scripts": {
     "dev": "nodemon",
-    "prod": "pm2 start src/loader.js --name my-money-api"
+    "prod": "pm2 start src/loader.js --name my-money-api",
+    "monit": "./node_modules/.bin/pm2 monit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "3.0.6",
+    "bcrypt": "5.0.0",
     "body-parser": "^1.15.2",
     "dotenv": "^16.0.3",
     "express": "^4.14.0",
