@@ -5,21 +5,8 @@ BillingCycle.methods(["get", "post", "put", "delete"]);
 BillingCycle.updateOptions({ new: true, runValidators: true });
 BillingCycle.after("post", errorHandler).after("put", errorHandler);
 
-// ### - SUGESTÃO DO CURSO PARA SOLUCIONAR UM PROBLEMA - ###
-// com estas linhas no código o skip e limit(paginação) não funciona
-
-// BillingCycle.route("get", (req, res, next) => {
-//   BillingCycle.find({}, (err, docs) => {
-//     if (err) {
-//       res.status(500).json({ errors: [err] });
-//     } else {
-//       res.json(docs);
-//     }
-//   });
-// });
-
 BillingCycle.route("count", (req, res, next) => {
-  BillingCycle.countDocuments((err, value) => {
+  BillingCycle.count((err, value) => {
     if (err) {
       res.send(500).json({ errors: [err] });
     } else {
@@ -29,33 +16,30 @@ BillingCycle.route("count", (req, res, next) => {
 });
 
 BillingCycle.route("summary", (req, res, next) => {
-  BillingCycle.aggregate(
-    [
-      {
-        $project: {
-          credit: { $sum: "$credits.value" },
-          debt: { $sum: "$debts.value" },
-        },
+  BillingCycle.aggregate([
+    {
+      $project: {
+        credit: { $sum: "$credits.value" },
+        debt: { $sum: "$debts.value" },
       },
-      {
-        $group: {
-          _id: null,
-          credit: { $sum: "$credit" },
-          debt: { $sum: "$debt" },
-        },
+    },
+    {
+      $group: {
+        _id: null,
+        credit: { $sum: "$credit" },
+        debt: { $sum: "$debt" },
       },
-      {
-        $project: { _id: 0, credit: true, debt: true },
-      },
-    ],
-    (err, result) => {
-      if (err) {
-        res.status(500).json({ errors: [err] });
-      } else {
-        res.json(result[0] || { credit: 0, debt: 0 });
-      }
+    },
+    {
+      $project: { _id: 0, credit: true, debt: true },
+    },
+  ]).exec((err, result) => {
+    if (err) {
+      res.status(500).json({ errors: [err] });
+    } else {
+      res.json(result[0] || { credit: 0, debt: 0 });
     }
-  );
+  });
 });
 
 module.exports = BillingCycle;
